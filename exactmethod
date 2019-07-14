@@ -1,0 +1,74 @@
+import numpy as np
+import random
+import time
+
+# Determine if a partition can be divided  
+# Into two subsets of equal sum.
+
+def randomSet():
+    set = []
+    # Size of Array.
+    size = 20
+
+    for i in range(size):
+        r = random.randint(0, 600) 
+        set.append(r)
+
+    return set
+
+def partition(arr, n) : 
+    sum_part = sum(arr)
+     
+    if (sum_part%2 != 0 & 1) : 
+        return False
+      
+    k = sum_part >> 1
+  
+    dp = np.zeros((n + 1, k + 1)) 
+  
+    for i in range(1, k + 1) :  
+        dp[0][i] = False
+  
+    for i in range(n + 1) :  
+        dp[i][0] = True
+  
+    for i in range(1, n + 1) :  
+        for currSum in range(1, k + 1) :  
+  
+            dp[i][currSum] = dp[i - 1][currSum] 
+  
+            if (arr[i - 1] <= currSum) : 
+                dp[i][currSum] = (dp[i][currSum] or
+                                  dp[i - 1][currSum - arr[i - 1]])
+ 
+
+    if (not dp[n][k]) :  
+        return False
+
+    set1, set2 = [], []
+    
+    return True
+  
+# Driver Code 
+def main():
+    for i in range (50):
+        set = randomSet()
+        n = len(set)
+
+        t = time.perf_counter_ns()
+        result = partition(set, n)
+        
+        while result == False:
+            set = randomSet()
+            
+            result = partition(set, n)
+            
+        end_time = time.perf_counter_ns()
+        elapsed_time = end_time - t
+        f = open("dp.txt", "a+")
+        f.write(str(elapsed_time/1000000)+"\n")
+        f.close()
+        
+main()
+  
+
